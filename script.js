@@ -383,57 +383,6 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 
-// VinoBot & Form Features
-document.addEventListener('DOMContentLoaded', function () {
-  const checkbox = document.getElementById('newsletter-checkbox');
-  checkbox?.addEventListener('click', () => {
-    checkbox.classList.toggle('checked');
-  });
-
-  const vinobotInput = document.getElementById('vinobot-input');
-  const vinobotSendButton = vinobotInput?.nextElementSibling;
-
-  vinobotSendButton?.addEventListener('click', function () {
-    const message = vinobotInput.value.trim();
-    if (message) {
-      const chatContainer = vinobotInput.closest('.bg-white').querySelector('.p-6');
-
-      const userMessage = document.createElement('div');
-      userMessage.className = 'flex mb-4 justify-end';
-      userMessage.innerHTML = `
-        <div class="bg-primary bg-opacity-10 text-gray-800 rounded-lg rounded-tr-none p-3 max-w-[80%]">
-          <p class="body-text">${message}</p>
-        </div>
-        <div class="w-8 h-8 flex items-center justify-center bg-gray-200 rounded-full ml-3 flex-shrink-0">
-          <i class="ri-user-line"></i>
-        </div>
-      `;
-      chatContainer.appendChild(userMessage);
-      vinobotInput.value = '';
-      chatContainer.scrollTop = chatContainer.scrollHeight;
-
-      setTimeout(() => {
-        const botMessage = document.createElement('div');
-        botMessage.className = 'flex mb-4';
-        botMessage.innerHTML = `
-          <div class="w-8 h-8 flex items-center justify-center bg-primary text-white rounded-full mr-3 flex-shrink-0">
-            <i class="ri-robot-line"></i>
-          </div>
-          <div class="bg-gray-100 rounded-lg rounded-tl-none p-3 max-w-[80%]">
-            <p class="body-text">Thanks! Tell me your favorite flavors and I’ll suggest the perfect NoVino.</p>
-          </div>
-        `;
-        chatContainer.appendChild(botMessage);
-        chatContainer.scrollTop = chatContainer.scrollHeight;
-      }, 1000);
-    }
-  });
-
-  vinobotInput?.addEventListener('keypress', function (e) {
-    if (e.key === 'Enter') vinobotSendButton.click();
-  });
-});
-
 // FAQ Toggle
 const faqButtons = document.querySelectorAll('.faq-question');
 
@@ -456,123 +405,199 @@ faqButtons.forEach((btn) => {
   });
 });
 
-
-
-// Visitor Counter
+// Visitor Counter (localStorage)
 document.addEventListener('DOMContentLoaded', function () {
-  let visits = localStorage.getItem('visitorCount') || 0;
-  visits = parseInt(visits) + 1;
-  localStorage.setItem('visitorCount', visits);
-  const formattedVisits = new Intl.NumberFormat().format(visits + 12487);
-  document.getElementById('visitor-counter').textContent = formattedVisits;
-});
-const context = `
-You are VinoBot, a friendly, knowledgeable assistant for NoVino — a premium Kenyan non-alcoholic drinks startup.
+    const counterElement = document.getElementById('visitor-counter');
 
-Origin:
-NoVino was born out of the post-Detty December scene in Nairobi. Three close friends wanted to extend the joy of social celebrations into Dry January, without alcohol. Their solution? Beautifully crafted, culturally rooted, alcohol-free drinks.
+    if (counterElement) {
+        let visits;
 
-Mission:
-NoVino’s mission is to provide sophisticated, flavorful non-alcoholic alternatives that celebrate Kenyan heritage, support mindful choices, and foster inclusive social gatherings. Every bottle is vibrant, inclusive, and sustainably sourced.
+        // 1. Get the current count from localStorage
+        // localStorage stores data as strings, so we need to parse it to a number
+        const storedVisits = localStorage.getItem('siteVisits');
 
-Products:
-NoVino currently offers two drink lines:
-1. Everyday Line:
-- Hibiscus Harmony: hibiscus, ginger, lemon. Antioxidant-rich, low sugar, caffeine-free.
-- Tamarind Twist: tamarind, cardamom, honey. Digestive aid, vitamin-rich.
-- Moringa Mist: moringa, cucumber, mint. Zero-calorie, nutrient-dense, energizing.
-- Baobab Bliss: baobab, coconut milk, vanilla. Plant-based, high fiber, prebiotic.
+        if (storedVisits) {
+            // If data exists, parse it and increment
+            visits = parseInt(storedVisits, 10) + 1;
+        } else {
+            // If no data exists, initialize to 1 (first visit)
+            visits = 1;
+        }
 
-2. Events Line:
-- Celebration Sparkle: sparkling green apple & elderflower. Alcohol-free, bubbly, premium.
-- Wedding Rose: strawberry and rose petal. Elegant, romantic, celebratory.
-- Corporate Classic: berries and oak. Sophisticated, professional.
+        // 2. Store the new count back into localStorage
+        localStorage.setItem('siteVisits', visits.toString()); // Convert back to string for storage
 
-Team:
-- Joy Awino, CEO & Flavor Specialist: food science background, leads product dev.
-- Joseph Chege, COO & Sustainability Lead: manages sourcing & ops with local farmers.
-- Stacey Kimani, CMO & Creative Director: leads marketing & brand storytelling.
-
-Vision:
-To be East Africa’s leading non-alcoholic brand that redefines celebration through culture-forward, alcohol-free experiences. Long-term, NoVino aims to expand across Africa and globally while maintaining ethical sourcing and local pride.
-
-How to Reach Us:
-📍 Kilimani Business Center, Nairobi  
-📧 hello@novino.co.ke  
-📞 +254 712 345 678  
-Follow us on Instagram, Twitter, Facebook, and LinkedIn.
-
-Use warm, local, celebratory language. Never say "I don't know" — politely guide users based on what you’ve been told.
-`;
-const chatInput = document.querySelector('.chatbox-input input');
-const sendBtn = document.querySelector('.chatbox-input button');
-const chatBody = document.querySelector('.chatbox-body');
-
-sendBtn.addEventListener('click', async () => {
-  const question = chatInput.value.trim();
-  if (!question) {
-    alert('Please enter a question!');
-    return;
-  }
-
-  appendMessage('user', question);
-  chatInput.value = '';
-
-  appendMessage('bot', 'Typing...');
-
-  try {
-    const response = await puter.ai.chat({
-      messages: [
-        { role: 'system', content: novinoContext },
-        { role: 'user', content: question }
-      ]
-    });
-
-    removeLastMessageIfTyping();
-    appendMessage('bot', response.choices[0].message.content);
-  } catch (error) {
-    removeLastMessageIfTyping();
-    appendMessage('bot', 'Oops! Something went wrong.');
-    console.error(error);
-  }
+        // 3. Display the count on the page
+        const formattedVisits = new Intl.NumberFormat().format(visits);
+        counterElement.textContent = formattedVisits;
+    }
 });
 
-function appendMessage(role, text) {
-  const msgDiv = document.createElement('div');
-  msgDiv.className = `chat-message ${role}`;
-  msgDiv.innerHTML = `<p>${text}</p>`;
-  chatBody.appendChild(msgDiv);
-  chatBody.scrollTop = chatBody.scrollHeight;
-}
-
-function removeLastMessageIfTyping() {
-  const last = chatBody.lastElementChild;
-  if (last && last.textContent === 'Typing...') {
-    chatBody.removeChild(last);
-  }
-}
 // VinoBot Chat Functionality
 document.addEventListener('DOMContentLoaded', function() {
   
-  // NoVino context for the chatbot responses
-  const responses = {
-    "who founded novino": "NoVino was founded by three friends: Joy Awino (CEO & Flavor Specialist), Joseph Chege (COO & Sustainability Lead), and Stacey Kimani (CMO & Creative Director). They created NoVino after wanting to continue social celebrations during Dry January in Nairobi.",
+  // Comprehensive NoVino knowledge base
+  const novinoKnowledge = {
+    // Company basics
+    'mission': "NoVino's mission is to provide sophisticated, flavorful non-alcoholic alternatives that celebrate Kenyan heritage, support mindful drinking choices, and foster inclusive social gatherings. Every bottle is vibrant, inclusive, and sustainably sourced from local farmers.",
     
-    "what problem does novino solve": "NoVino solves the problem of limited premium non-alcoholic options during social gatherings. Born from the post-Detty December scene in Nairobi, we provide sophisticated alternatives for Dry January and mindful drinking choices.",
+    'story': "NoVino was born from the vibrant post-Detty December celebrations in Nairobi. Three friends wanted to continue the social joy of gathering during Dry January without alcohol, so they created premium non-alcoholic drinks using traditional Kenyan ingredients.",
     
-    "what are novino's products": "We offer two product lines: Everyday drinks (Hibiscus Harmony, Tamarind Twist, Moringa Mist, Baobab Bliss) and Event drinks (Celebration Sparkle, Wedding Rose, Corporate Classic). All are crafted with traditional Kenyan ingredients.",
+    'founders': "NoVino was founded by three friends: Joy Awino (CEO & Flavor Specialist with food science background), Joseph Chege (COO & Sustainability Lead managing sourcing & operations), and Stacey Kimani (CMO & Creative Director leading marketing & brand storytelling).",
     
-    "how can i contact novino": "You can reach us at: 📍 Kilimani Business Center, Nairobi 📧 hello@novino.co.ke 📞 +254 712 345 678. Follow us on social media for updates!",
+    'vision': "To be East Africa's leading non-alcoholic brand that redefines celebration through culture-forward, alcohol-free experiences. Long-term, NoVino aims to expand across Africa and globally while maintaining ethical sourcing and local pride.",
     
-    "what's novino's long-term goal": "Our vision is to become East Africa's leading non-alcoholic brand, redefining celebration through culture-forward, alcohol-free experiences. We aim to expand across Africa while maintaining ethical sourcing and local pride.",
+    // Products - Everyday Line
+    'products': "NoVino offers two product lines: Everyday drinks (Hibiscus Harmony, Tamarind Twist, Moringa Mist, Baobab Bliss) and Event drinks (Celebration Sparkle, Wedding Rose, Corporate Classic). All are crafted with traditional Kenyan ingredients.",
     
-    "default": "That's a great question! NoVino specializes in premium non-alcoholic drinks made with traditional Kenyan ingredients. We have everyday drinks like Hibiscus Harmony and event drinks like Celebration Sparkle. What specific aspect would you like to know more about?"
+    'hibiscus': "Hibiscus Harmony is our refreshing blend of hibiscus flowers with subtle notes of ginger and lemon. It's antioxidant-rich, low sugar, and caffeine-free - perfect for warm Nairobi evenings!",
+    
+    'tamarind': "Tamarind Twist offers a tangy, sweet blend of tamarind and honey with a hint of cardamom. It's vitamin-rich, acts as a digestive aid, and uses natural sweeteners - a sophisticated alternative to traditional cocktails.",
+    
+    'moringa': "Moringa Mist is a light, refreshing blend of moringa leaves, cucumber, and mint. It's nutrient-dense, energizing, and has zero calories - the perfect daytime refreshment with health benefits.",
+    
+    'baobab': "Baobab Bliss is a creamy, smooth blend of baobab fruit, coconut milk, and vanilla. It's high fiber, prebiotic, and plant-based - like a delicious dessert alternative with a Kenyan twist.",
+    
+    // Products - Events Line
+    'celebration': "Celebration Sparkle is our sophisticated sparkling blend perfect for toasts and special occasions. It features notes of green apple and elderflower and is alcohol-free, bubbly, and premium quality.",
+    
+    'wedding': "Wedding Rose is a delicate rose-colored blend with hints of strawberry and rose petals. It's elegant, romantic, and perfect for wedding celebrations and special romantic occasions.",
+    
+    'corporate': "Corporate Classic is a sophisticated blend designed for business events and corporate gatherings. It features complex notes of berries and oak, making it professional, sophisticated, and premium.",
+    
+    // Contact and business
+    'contact': "You can reach NoVino at: 📍 Kilimani Business Center, Nairobi, Kenya 📧 hello@novino.co.ke 📞 +254 712 345 678. Follow us on Instagram, Facebook, Twitter, and LinkedIn for updates!",
+    
+    'shipping': "Currently, NoVino ships throughout East Africa. We're working on expanding our shipping network to reach more international customers. Sign up for our newsletter to stay updated on shipping availability.",
+    
+    'sustainability': "We source ingredients ethically from local farmers across Kenya, supporting sustainable agriculture. Our packaging is eco-friendly to minimize environmental impact, and we maintain direct relationships with our suppliers.",
+    
+    // Values and culture
+    'values': "NoVino's core values are: Vibrant (celebrating Kenya's rich culture in every bottle), Inclusive (everyone deserves to be part of celebrations), and Sustainable (ethical sourcing and eco-friendly practices)."
   };
+
+  // Function to normalize text for better matching (FIXED)
+  function normalizeText(text) {
+    return text.toLowerCase()
+      .replace(/[^\w\s]/g, ' ') // Replace all punctuation with spaces
+      .replace(/\s+/g, ' ')     // Normalize multiple spaces to single space
+      .trim();
+  }
+
+  // Function to check if question contains keywords (IMPROVED)
+  function containsKeywords(question, keywords) {
+    const normalizedQuestion = normalizeText(question);
+    return keywords.some(keyword => normalizedQuestion.includes(keyword.toLowerCase()));
+  }
+
+  // Function to find the best response (COMPLETELY REWRITTEN)
+  function getResponse(question) {
+    const normalizedQuestion = normalizeText(question);
+    
+    // Mission and purpose keywords
+    if (containsKeywords(question, ['mission', 'purpose', 'goal', 'why novino', 'what does novino do'])) {
+      return novinoKnowledge.mission;
+    }
+    
+    // Story and history
+    if (containsKeywords(question, ['story', 'history', 'origin', 'started', 'began', 'how novino began'])) {
+      return novinoKnowledge.story;
+    }
+    
+    // Founders and team
+    if (containsKeywords(question, ['founder', 'founded', 'who created', 'team', 'owner', 'who started', 'who founded'])) {
+      return novinoKnowledge.founders;
+    }
+    
+    // Vision and future
+    if (containsKeywords(question, ['vision', 'future', 'long term', 'expansion', 'goal', 'long-term'])) {
+      return novinoKnowledge.vision;
+    }
+    
+    // Products general
+    if (containsKeywords(question, ['product', 'drink', 'beverage', 'what do you sell', 'what products', 'what drinks'])) {
+      return novinoKnowledge.products;
+    }
+    
+    // Specific products
+    if (containsKeywords(question, ['hibiscus', 'harmony'])) {
+      return novinoKnowledge.hibiscus;
+    }
+    
+    if (containsKeywords(question, ['tamarind', 'twist'])) {
+      return novinoKnowledge.tamarind;
+    }
+    
+    if (containsKeywords(question, ['moringa', 'mist'])) {
+      return novinoKnowledge.moringa;
+    }
+    
+    if (containsKeywords(question, ['baobab', 'bliss'])) {
+      return novinoKnowledge.baobab;
+    }
+    
+    if (containsKeywords(question, ['celebration', 'sparkle', 'sparkling'])) {
+      return novinoKnowledge.celebration;
+    }
+    
+    if (containsKeywords(question, ['wedding', 'rose'])) {
+      return novinoKnowledge.wedding;
+    }
+    
+    if (containsKeywords(question, ['corporate', 'classic', 'business'])) {
+      return novinoKnowledge.corporate;
+    }
+    
+    // Contact information
+    if (containsKeywords(question, ['contact', 'reach', 'phone', 'email', 'address', 'how to contact'])) {
+      return novinoKnowledge.contact;
+    }
+    
+    // Shipping
+    if (containsKeywords(question, ['shipping', 'delivery', 'international', 'ship'])) {
+      return novinoKnowledge.shipping;
+    }
+    
+    // Sustainability
+    if (containsKeywords(question, ['sustainable', 'sustainability', 'ethical', 'local farmers', 'environment'])) {
+      return novinoKnowledge.sustainability;
+    }
+    
+    // Values
+    if (containsKeywords(question, ['values', 'principles', 'beliefs', 'what novino believes'])) {
+      return novinoKnowledge.values;
+    }
+    
+    // Fallback responses for common patterns
+    if (containsKeywords(question, ['hello', 'hi', 'hey'])) {
+      return "Hello! I'm VinoBot, your guide to NoVino's premium non-alcoholic drinks. I can tell you about our products, story, team, or help you find the perfect drink for any occasion. What would you like to know?";
+    }
+
+    if (containsKeywords(question, ['price', 'cost', 'buy', 'purchase', 'how much'])) {
+      return "For pricing information and to place orders, please contact us at hello@novino.co.ke or +254 712 345 678. We offer competitive rates for both individual bottles and bulk orders!";
+    }
+
+    if (containsKeywords(question, ['ingredients', 'kenyan', 'what is in'])) {
+      return "All our drinks use traditional Kenyan botanicals like hibiscus, tamarind, moringa, and baobab. We source ethically from local farmers to celebrate Kenya's rich heritage while supporting sustainable agriculture!";
+    }
+
+    if (containsKeywords(question, ['alcohol', 'alcoholic', 'alcohol free', 'non alcoholic'])) {
+      return "Yes, all NoVino beverages are 100% alcohol-free! Our drinks are crafted using natural ingredients and traditional Kenyan botanicals, making them perfect for those who choose not to consume alcohol or for events like Dry January.";
+    }
+
+    // Default response
+    return "That's a great question! NoVino specializes in premium non-alcoholic drinks made with traditional Kenyan ingredients. We have everyday drinks like Hibiscus Harmony and Tamarind Twist, plus event drinks like Celebration Sparkle. What specific aspect would you like to know more about - our products, story, or how to get in touch?";
+  }
 
   // Get DOM elements
   const chatInput = document.getElementById('chat-input');
   const sendBtn = document.getElementById('send-btn');
   const chatBody = document.getElementById('chatbox-body');
+
+  if (!chatInput || !sendBtn || !chatBody) {
+    console.error('VinoBot: Required elements not found');
+    return;
+  }
 
   // Function to add a message to the chat
   function addMessage(content, isUser = false) {
@@ -626,50 +651,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
-  // Function to get response based on user input
-  function getResponse(question) {
-    const normalizedQuestion = question.toLowerCase().trim();
-    
-    // Check for specific questions
-    for (let key in responses) {
-      if (normalizedQuestion.includes(key.replace(/'/g, ""))) {
-        return responses[key];
-      }
-    }
-    
-    // Check for product-specific questions
-    if (normalizedQuestion.includes('hibiscus')) {
-      return "Hibiscus Harmony is our refreshing blend of hibiscus flowers with ginger and lemon. It's antioxidant-rich, low sugar, and caffeine-free - perfect for warm Nairobi evenings!";
-    }
-    
-    if (normalizedQuestion.includes('tamarind')) {
-      return "Tamarind Twist offers a tangy, sweet blend of tamarind and honey with cardamom. It's vitamin-rich and acts as a digestive aid - a sophisticated cocktail alternative!";
-    }
-    
-    if (normalizedQuestion.includes('moringa')) {
-      return "Moringa Mist is a light, refreshing blend of moringa leaves, cucumber, and mint. It's nutrient-dense, energizing, and has zero calories - perfect for daytime refreshment!";
-    }
-    
-    if (normalizedQuestion.includes('baobab')) {
-      return "Baobab Bliss is a creamy, smooth blend of baobab fruit, coconut milk, and vanilla. It's high fiber, prebiotic, and plant-based - like a healthy dessert with a Kenyan twist!";
-    }
-    
-    if (normalizedQuestion.includes('celebration') || normalizedQuestion.includes('events')) {
-      return "Our Events line includes Celebration Sparkle (green apple & elderflower), Wedding Rose (strawberry & rose petals), and Corporate Classic (berries & oak). Perfect for special occasions!";
-    }
-    
-    if (normalizedQuestion.includes('ingredients') || normalizedQuestion.includes('kenyan')) {
-      return "All our drinks use traditional Kenyan botanicals like hibiscus, tamarind, moringa, and baobab. We source ethically from local farmers to celebrate Kenya's rich heritage!";
-    }
-    
-    if (normalizedQuestion.includes('price') || normalizedQuestion.includes('cost')) {
-      return "For pricing information and to place orders, please contact us at hello@novino.co.ke or +254 712 345 678. We offer competitive rates for both individual bottles and bulk orders!";
-    }
-    
-    // Default response
-    return responses.default;
-  }
-
   // Function to send a message
   function sendMessage() {
     const message = chatInput.value.trim();
@@ -689,11 +670,11 @@ document.addEventListener('DOMContentLoaded', function() {
       const response = getResponse(message);
       addMessage(response);
       sendBtn.disabled = false;
-      chatInput.focus(); // Keep focus on input for continuous conversation
-    }, Math.random() * 1000 + 1000); // Random delay between 1-2 seconds
+      chatInput.focus();
+    }, Math.random() * 1000 + 800); // Random delay between 0.8-1.8 seconds
   }
 
-  // Function to ask predefined questions (from sample buttons)
+  // Function to ask predefined questions (from sample buttons) - FIXED
   window.askQuestion = function(question) {
     chatInput.value = question;
     sendMessage();
@@ -704,18 +685,45 @@ document.addEventListener('DOMContentLoaded', function() {
   
   chatInput.addEventListener('keypress', function(e) {
     if (e.key === 'Enter') {
+      e.preventDefault();
       sendMessage();
     }
   });
 
-  // Disable send button when input is empty
+  // Enable/disable send button based on input
   chatInput.addEventListener('input', function() {
     sendBtn.disabled = this.value.trim() === '';
   });
 
   // Initialize with disabled send button
   sendBtn.disabled = true;
-  
-  // Focus on input when page loads
-  chatInput.focus();
+
+// Scroll to top on logo click
+document.querySelector('.logo').addEventListener('click', (e) => {
+  e.preventDefault(); // Prevent default anchor behavior if logo is an <a> tag
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+// Toggle side menu
+const mobileMenuButton = document.querySelector('.mobile-menu-button');
+const mobileMenu = document.querySelector('.mobile-menu');
+const closeButton = document.createElement('button');
+closeButton.classList.add('close-button');
+closeButton.innerHTML = '&times;'; // Close icon (×)
+mobileMenu.prepend(closeButton); // Add close button to menu
+
+mobileMenuButton.addEventListener('click', () => {
+  mobileMenu.classList.toggle('active');
+});
+
+closeButton.addEventListener('click', () => {
+  mobileMenu.classList.remove('active');
+});
+
+// Close menu when clicking a link
+mobileMenu.querySelectorAll('a').forEach(link => {
+  link.addEventListener('click', () => {
+    mobileMenu.classList.remove('active');
+  });
+});
 });

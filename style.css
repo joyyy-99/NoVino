@@ -7,6 +7,10 @@ body {
   overscroll-behavior: none;
 }
 
+body.mobile-menu-open {
+  overflow: hidden;
+}
+
 h1, h2, h3 {
   font-family: 'Montserrat', sans-serif;
   font-weight: 700;
@@ -62,6 +66,7 @@ p {
   display: flex;
   align-items: center;
   transition: color 0.3s ease;
+  cursor: pointer;
 }
 
 .logo:hover {
@@ -112,17 +117,56 @@ p {
   color: #333;
   background: none;
   border: none;
+  z-index: 1002;
 }
 
+/* Side Mobile Menu */
 .mobile-menu {
-  display: none;
-  flex-direction: column;
-  padding: 1rem;
-  background-color: white;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 280px;
+    height: 100vh;
+    background-color: white;
+    box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
+    padding: 4rem 2rem 2rem;
+    transition: right 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    z-index: 1001;
 }
 
-.mobile-menu.hidden {
-  display: none;
+.mobile-menu.open {
+    right: 0;
+}
+
+.mobile-menu a {
+    color: #333;
+    text-decoration: none;
+    font-size: 1.2rem;
+    font-weight: 500;
+    padding: 0.5rem 0;
+    transition: color 0.3s ease;
+}
+
+.mobile-menu a:hover {
+    color: #8B0000;
+}
+
+.menu-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    z-index: 1000;
+}
+
+.menu-overlay.open {
+    display: block;
 }
 
 /* Buttons */
@@ -274,13 +318,11 @@ p {
 
 /* Carousel Container */
 .carousel-container {
-  position: relative;
-  max-width: 1200px;
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 0 1rem;
+    position: relative;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
 }
 
 .carousel-container.hidden {
@@ -288,18 +330,18 @@ p {
 }
 
 .carousel-wrapper {
-  flex: 1;
-  overflow: hidden;
-  border-radius: 12px;
+    flex: 1;
+    overflow: hidden;
+    padding: 1rem 0;
 }
 
 /* Product Carousel */
 .product-carousel {
-  display: flex;
-  gap: 1.5rem;
-  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  padding: 1rem 0;
-  touch-action: pan-y;
+    display: flex;
+    gap: 1.5rem;
+    transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    padding: 1rem 0;
+    touch-action: pan-y;
 }
 
 .product-card {
@@ -321,7 +363,7 @@ p {
 .product-card img {
   width: 100%;
   border-radius: 12px;
-  object-fit: cover;
+  object-fit: contain;
   height: 220px;
 }
 
@@ -357,30 +399,29 @@ p {
 
 /* Carousel Navigation Buttons */
 .carousel-btn {
-  background: white;
-  border: 2px solid #8B0000;
-  border-radius: 50%;
-  width: 48px;
-  height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  color: #8B0000;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  z-index: 10;
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
+    background: white;
+    border: 2px solid #8B0000;
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: #8B0000;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+    top: 50%;
+    transform: translateY(-50%);
 }
 
 .carousel-btn.prev {
-  left: 8px;
+    left: -24px;
 }
 
 .carousel-btn.next {
-  right: 8px;
+    right: -24px;
 }
 
 .carousel-btn:hover {
@@ -405,6 +446,7 @@ p {
   color: #8B0000;
   transform: translateY(-50%);
 }
+
 
 /* FAQ Section */
 .faq-section {
@@ -988,7 +1030,7 @@ p {
 
 .social-follow h4 {
   margin-top: 1.5rem;
-  margin-bottom: 0.5rem;
+ 
   font-weight: 600;
   font-size: 1rem;
 }
@@ -1054,153 +1096,167 @@ p {
 
 /* Footer */
 .footer {
-  background-color: #fff5ee;
-  padding: 4rem 1rem 2rem;
-  font-size: 0.95rem;
-  color: #444;
-  border-top: 1px solid #e5ddd3;
+    background-color: #fff5ee;
+    padding: 4rem 1rem 2rem;
+    font-size: 0.95rem;
+    color: #444;
+    border-top: 1px solid #e5ddd3;
 }
 
 .footer .container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 2rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
 }
 
 .footer-about i {
-  font-size: 1.5rem;
-  color: #8B0000;
-  margin-bottom: 0.5rem;
-  display: inline-block;
+    font-size: 1.5rem;
+    color: #8B0000;
+    margin-bottom: 0.5rem;
+    display: inline-block;
 }
 
 .footer-about span {
-  font-weight: bold;
-  font-size: 1.3rem;
-  color: #8B0000;
-  display: block;
-  margin-bottom: 0.5rem;
+    font-weight: bold;
+    font-size: 1.3rem;
+    color: #8B0000;
+    display: block;
+    margin-bottom: 0.5rem;
 }
 
 .footer-about p {
-  color: #666;
-  max-width: 280px;
-  font-size: 0.9rem;
+    color: #666;
+    max-width: 280px;
+    font-size: 0.9rem;
 }
 
 .footer-links h4,
 .footer-social h4,
 .footer-products h4,
 .footer-newsletter h4 {
-  color: #8B0000;
-  font-weight: bold;
-  margin-bottom: 1rem;
-  font-size: 1rem;
+    color: #8B0000;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    font-size: 1rem;
 }
 
 .footer-links ul,
 .footer-products ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+    list-style: none;
+    padding: 0;
+    margin: 0;
 }
 
 .footer-links li,
 .footer-products li {
-  margin-bottom: 0.5rem;
+    margin-bottom: 0.5rem;
 }
 
 .footer-links a,
 .footer-products a {
-  color: #444;
-  text-decoration: none;
-  transition: color 0.2s;
-  font-size: 0.95rem;
+    color: #444;
+    text-decoration: none;
+    transition: color 0.3s ease;
+    font-size: 0.95rem;
 }
 
 .footer-links a:hover,
 .footer-products a:hover {
-  color: #8B0000;
+    color: #8B0000;
 }
 
 .footer-social .social-icons {
-  display: flex;
-  gap: 1rem;
-  margin-top: 0.5rem;
+    display: flex;
+    gap: 1rem;
+    margin-top: 0.5rem;
 }
 
 .footer-social .social-icons a {
-  font-size: 1.3rem;
-  color: #8B0000;
-  transition: opacity 0.2s;
+    font-size: 1.3rem;
+    color: #8B0000;
+    transition: color 0.3s ease, transform 0.3s ease;
 }
 
 .footer-social .social-icons a:hover {
-  opacity: 0.8;
+    color: #a80000;
+    transform: scale(1.1);
 }
 
 .footer-newsletter p {
-  color: #666;
-  margin-bottom: 0.5rem;
-  font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
 }
 
 .footer-newsletter form {
-  display: flex;
-  margin-bottom: 0.5rem;
+    display: flex;
+    margin-bottom: 0.5rem;
 }
 
 .footer-newsletter input[type="email"] {
-  padding: 0.6rem;
-  border: none;
-  border-top-left-radius: 20px;
-  border-bottom-left-radius: 20px;
-  flex: 1;
-  font-size: 1rem;
+    padding: 0.6rem;
+    border: 1px solid #ccc;
+    border-right: none;
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+    flex: 1;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+.footer-newsletter input[type="email"]:focus {
+    outline: none;
+    border-color: #8B0000;
 }
 
 .footer-newsletter button {
-  background-color: #8B0000;
-  color: white;
-  border: none;
-  padding: 0 1rem;
-  font-size: 1.2rem;
-  border-top-right-radius: 20px;
-  border-bottom-right-radius: 20px;
-  cursor: pointer;
+    background-color: #8B0000;
+    color: white;
+    border: none;
+    padding: 0 1rem;
+    font-size: 1.2rem;
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.footer-newsletter button:hover {
+    background-color: #a00000;
 }
 
 .footer-icons {
-  display: flex;
-  gap: 0.5rem;
-  margin-top: 0.5rem;
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
 }
 
 .footer-icons i {
-  font-size: 1.2rem;
-  color: #999;
+    font-size: 1.2rem;
+    color: #999;
 }
 
 .footer-bottom {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 2rem;
-  border-top: 1px solid #e0d8ce;
-  padding-top: 1.5rem;
-  font-size: 0.85rem;
-  color: #777;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 2rem;
+    border-top: 1px solid #e0d8ce;
+    padding-top: 1.5rem;
+    font-size: 0.85rem;
+    color: #777;
+    flex-wrap: wrap;
 }
 
 .footer-bottom a {
-  margin: 0 0.5rem;
-  color: #777;
-  text-decoration: none;
-  transition: color 0.2s;
+    margin: 0 0.5rem;
+    color: #777;
+    text-decoration: none;
+    transition: color 0.3s ease;
 }
 
 .footer-bottom a:hover {
-  color: #8B0000;
+    color: #8B0000;
 }
 
 /* Responsive Design */
@@ -1215,9 +1271,9 @@ p {
   }
 
   .carousel-container {
-    padding: 0 0.75rem;
+    padding: 0 2rem;
   }
-
+  
   .product-card {
     width: 260px;
     min-width: 260px;
@@ -1233,30 +1289,17 @@ p {
     display: block;
   }
 
-  .mobile-menu {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    padding: 1rem;
-    background-color: white;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-
-  .mobile-menu a {
-    color: #333;
-    text-decoration: none;
-    font-weight: 500;
-    padding: 0.5rem 0;
-  }
-
-  .carousel-container {
-    padding: 0 0.5rem;
-  }
-
   .carousel-btn {
     width: 40px;
     height: 40px;
-    display: flex;
+  }
+
+  .carousel-btn.prev {
+      left: -10px;
+  }
+
+  .carousel-btn.next {
+      right: -10px;
   }
 
   .product-card {
@@ -1268,7 +1311,9 @@ p {
     gap: 1rem;
   }
 
-  .testimonial-grid {
+  .testimonial-grid,
+  .values-grid,
+  .team-grid {
     flex-direction: column;
     align-items: center;
   }
@@ -1276,16 +1321,6 @@ p {
   .testimonial-card {
     width: 100%;
     max-width: 500px;
-  }
-
-  .values-grid {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .team-grid {
-    flex-direction: column;
-    align-items: center;
   }
 
   .contact-container {
@@ -1298,24 +1333,24 @@ p {
 
   .footer-bottom {
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 1rem;
     text-align: center;
   }
 }
 
 @media (max-width: 480px) {
   .container {
-    padding: 0 0.5rem;
+    padding: 0 1rem;
   }
 
   .section {
-    padding: 2rem 0;
+    padding: 3rem 0;
   }
-
+  
   .hero {
-    padding-top: 4rem;
+    padding-top: 5rem;
   }
-
+  
   .hero-content {
     padding: 2rem 1rem;
   }
@@ -1325,37 +1360,35 @@ p {
   }
 
   .carousel-container {
-    position: relative;
-    padding: 0;
+    padding: 0 1rem;
   }
 
   .carousel-wrapper {
-    overflow: hidden;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none; /* Firefox */
+  }
+  
+  .carousel-wrapper::-webkit-scrollbar {
+      display: none; /* Safari and Chrome */
   }
 
   .carousel-btn {
-    display: flex;
-    width: 36px;
-    height: 36px;
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 10;
+      display: flex;
   }
 
   .carousel-btn.prev {
-    left: 8px;
+      left: 0;
   }
-
+  
   .carousel-btn.next {
-    right: 8px;
+      right: 0;
   }
 
   .product-carousel {
-    display: flex;
-    gap: 0.75rem;
-    padding: 0.75rem;
-    transition: transform 0.4s ease;
+    gap: 1rem;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
   }
 
   .product-card {
@@ -1370,7 +1403,7 @@ p {
   .chatbox-wrapper {
     margin: 0 0.5rem;
   }
-
+  
   .chatbox-body {
     max-height: 300px;
     min-height: 250px;
@@ -1385,26 +1418,11 @@ p {
     max-width: 85%;
   }
 
-  .faq-section h2 {
-    font-size: 2rem;
-  }
-
-  .testimonial-section h2 {
-    font-size: 1.8rem;
-  }
-
-  .values-section h2 {
-    font-size: 1.8rem;
-  }
-
-  .team-section h2 {
-    font-size: 1.8rem;
-  }
-
-  .vinobot-section h2 {
-    font-size: 1.8rem;
-  }
-
+  .faq-section h2,
+  .testimonial-section h2,
+  .values-section h2,
+  .team-section h2,
+  .vinobot-section h2,
   .contact-details h2 {
     font-size: 1.8rem;
   }
