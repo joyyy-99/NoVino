@@ -466,3 +466,256 @@ document.addEventListener('DOMContentLoaded', function () {
   const formattedVisits = new Intl.NumberFormat().format(visits + 12487);
   document.getElementById('visitor-counter').textContent = formattedVisits;
 });
+const context = `
+You are VinoBot, a friendly, knowledgeable assistant for NoVino — a premium Kenyan non-alcoholic drinks startup.
+
+Origin:
+NoVino was born out of the post-Detty December scene in Nairobi. Three close friends wanted to extend the joy of social celebrations into Dry January, without alcohol. Their solution? Beautifully crafted, culturally rooted, alcohol-free drinks.
+
+Mission:
+NoVino’s mission is to provide sophisticated, flavorful non-alcoholic alternatives that celebrate Kenyan heritage, support mindful choices, and foster inclusive social gatherings. Every bottle is vibrant, inclusive, and sustainably sourced.
+
+Products:
+NoVino currently offers two drink lines:
+1. Everyday Line:
+- Hibiscus Harmony: hibiscus, ginger, lemon. Antioxidant-rich, low sugar, caffeine-free.
+- Tamarind Twist: tamarind, cardamom, honey. Digestive aid, vitamin-rich.
+- Moringa Mist: moringa, cucumber, mint. Zero-calorie, nutrient-dense, energizing.
+- Baobab Bliss: baobab, coconut milk, vanilla. Plant-based, high fiber, prebiotic.
+
+2. Events Line:
+- Celebration Sparkle: sparkling green apple & elderflower. Alcohol-free, bubbly, premium.
+- Wedding Rose: strawberry and rose petal. Elegant, romantic, celebratory.
+- Corporate Classic: berries and oak. Sophisticated, professional.
+
+Team:
+- Joy Awino, CEO & Flavor Specialist: food science background, leads product dev.
+- Joseph Chege, COO & Sustainability Lead: manages sourcing & ops with local farmers.
+- Stacey Kimani, CMO & Creative Director: leads marketing & brand storytelling.
+
+Vision:
+To be East Africa’s leading non-alcoholic brand that redefines celebration through culture-forward, alcohol-free experiences. Long-term, NoVino aims to expand across Africa and globally while maintaining ethical sourcing and local pride.
+
+How to Reach Us:
+📍 Kilimani Business Center, Nairobi  
+📧 hello@novino.co.ke  
+📞 +254 712 345 678  
+Follow us on Instagram, Twitter, Facebook, and LinkedIn.
+
+Use warm, local, celebratory language. Never say "I don't know" — politely guide users based on what you’ve been told.
+`;
+const chatInput = document.querySelector('.chatbox-input input');
+const sendBtn = document.querySelector('.chatbox-input button');
+const chatBody = document.querySelector('.chatbox-body');
+
+sendBtn.addEventListener('click', async () => {
+  const question = chatInput.value.trim();
+  if (!question) {
+    alert('Please enter a question!');
+    return;
+  }
+
+  appendMessage('user', question);
+  chatInput.value = '';
+
+  appendMessage('bot', 'Typing...');
+
+  try {
+    const response = await puter.ai.chat({
+      messages: [
+        { role: 'system', content: novinoContext },
+        { role: 'user', content: question }
+      ]
+    });
+
+    removeLastMessageIfTyping();
+    appendMessage('bot', response.choices[0].message.content);
+  } catch (error) {
+    removeLastMessageIfTyping();
+    appendMessage('bot', 'Oops! Something went wrong.');
+    console.error(error);
+  }
+});
+
+function appendMessage(role, text) {
+  const msgDiv = document.createElement('div');
+  msgDiv.className = `chat-message ${role}`;
+  msgDiv.innerHTML = `<p>${text}</p>`;
+  chatBody.appendChild(msgDiv);
+  chatBody.scrollTop = chatBody.scrollHeight;
+}
+
+function removeLastMessageIfTyping() {
+  const last = chatBody.lastElementChild;
+  if (last && last.textContent === 'Typing...') {
+    chatBody.removeChild(last);
+  }
+}
+// VinoBot Chat Functionality
+document.addEventListener('DOMContentLoaded', function() {
+  
+  // NoVino context for the chatbot responses
+  const responses = {
+    "who founded novino": "NoVino was founded by three friends: Joy Awino (CEO & Flavor Specialist), Joseph Chege (COO & Sustainability Lead), and Stacey Kimani (CMO & Creative Director). They created NoVino after wanting to continue social celebrations during Dry January in Nairobi.",
+    
+    "what problem does novino solve": "NoVino solves the problem of limited premium non-alcoholic options during social gatherings. Born from the post-Detty December scene in Nairobi, we provide sophisticated alternatives for Dry January and mindful drinking choices.",
+    
+    "what are novino's products": "We offer two product lines: Everyday drinks (Hibiscus Harmony, Tamarind Twist, Moringa Mist, Baobab Bliss) and Event drinks (Celebration Sparkle, Wedding Rose, Corporate Classic). All are crafted with traditional Kenyan ingredients.",
+    
+    "how can i contact novino": "You can reach us at: 📍 Kilimani Business Center, Nairobi 📧 hello@novino.co.ke 📞 +254 712 345 678. Follow us on social media for updates!",
+    
+    "what's novino's long-term goal": "Our vision is to become East Africa's leading non-alcoholic brand, redefining celebration through culture-forward, alcohol-free experiences. We aim to expand across Africa while maintaining ethical sourcing and local pride.",
+    
+    "default": "That's a great question! NoVino specializes in premium non-alcoholic drinks made with traditional Kenyan ingredients. We have everyday drinks like Hibiscus Harmony and event drinks like Celebration Sparkle. What specific aspect would you like to know more about?"
+  };
+
+  // Get DOM elements
+  const chatInput = document.getElementById('chat-input');
+  const sendBtn = document.getElementById('send-btn');
+  const chatBody = document.getElementById('chatbox-body');
+
+  // Function to add a message to the chat
+  function addMessage(content, isUser = false) {
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `chat-message ${isUser ? 'user' : 'bot'}`;
+    
+    messageDiv.innerHTML = `
+      <div class="message-avatar ${isUser ? 'user' : 'bot'}">
+        <i class="ri-${isUser ? 'user-3-line' : 'robot-2-line'}"></i>
+      </div>
+      <div class="message-content">
+        <p>${content}</p>
+      </div>
+    `;
+    
+    chatBody.appendChild(messageDiv);
+    chatBody.scrollTop = chatBody.scrollHeight;
+  }
+
+  // Function to add typing indicator
+  function addTypingIndicator() {
+    const typingDiv = document.createElement('div');
+    typingDiv.className = 'chat-message bot';
+    typingDiv.id = 'typing-indicator';
+    
+    typingDiv.innerHTML = `
+      <div class="message-avatar bot">
+        <i class="ri-robot-2-line"></i>
+      </div>
+      <div class="message-content">
+        <div class="typing-indicator">
+          <span>VinoBot is typing</span>
+          <div class="typing-dots">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </div>
+      </div>
+    `;
+    
+    chatBody.appendChild(typingDiv);
+    chatBody.scrollTop = chatBody.scrollHeight;
+  }
+
+  // Function to remove typing indicator
+  function removeTypingIndicator() {
+    const typing = document.getElementById('typing-indicator');
+    if (typing) {
+      typing.remove();
+    }
+  }
+
+  // Function to get response based on user input
+  function getResponse(question) {
+    const normalizedQuestion = question.toLowerCase().trim();
+    
+    // Check for specific questions
+    for (let key in responses) {
+      if (normalizedQuestion.includes(key.replace(/'/g, ""))) {
+        return responses[key];
+      }
+    }
+    
+    // Check for product-specific questions
+    if (normalizedQuestion.includes('hibiscus')) {
+      return "Hibiscus Harmony is our refreshing blend of hibiscus flowers with ginger and lemon. It's antioxidant-rich, low sugar, and caffeine-free - perfect for warm Nairobi evenings!";
+    }
+    
+    if (normalizedQuestion.includes('tamarind')) {
+      return "Tamarind Twist offers a tangy, sweet blend of tamarind and honey with cardamom. It's vitamin-rich and acts as a digestive aid - a sophisticated cocktail alternative!";
+    }
+    
+    if (normalizedQuestion.includes('moringa')) {
+      return "Moringa Mist is a light, refreshing blend of moringa leaves, cucumber, and mint. It's nutrient-dense, energizing, and has zero calories - perfect for daytime refreshment!";
+    }
+    
+    if (normalizedQuestion.includes('baobab')) {
+      return "Baobab Bliss is a creamy, smooth blend of baobab fruit, coconut milk, and vanilla. It's high fiber, prebiotic, and plant-based - like a healthy dessert with a Kenyan twist!";
+    }
+    
+    if (normalizedQuestion.includes('celebration') || normalizedQuestion.includes('events')) {
+      return "Our Events line includes Celebration Sparkle (green apple & elderflower), Wedding Rose (strawberry & rose petals), and Corporate Classic (berries & oak). Perfect for special occasions!";
+    }
+    
+    if (normalizedQuestion.includes('ingredients') || normalizedQuestion.includes('kenyan')) {
+      return "All our drinks use traditional Kenyan botanicals like hibiscus, tamarind, moringa, and baobab. We source ethically from local farmers to celebrate Kenya's rich heritage!";
+    }
+    
+    if (normalizedQuestion.includes('price') || normalizedQuestion.includes('cost')) {
+      return "For pricing information and to place orders, please contact us at hello@novino.co.ke or +254 712 345 678. We offer competitive rates for both individual bottles and bulk orders!";
+    }
+    
+    // Default response
+    return responses.default;
+  }
+
+  // Function to send a message
+  function sendMessage() {
+    const message = chatInput.value.trim();
+    if (!message) return;
+    
+    // Add user message
+    addMessage(message, true);
+    chatInput.value = '';
+    
+    // Show typing indicator
+    addTypingIndicator();
+    sendBtn.disabled = true;
+    
+    // Simulate response delay for more realistic feel
+    setTimeout(() => {
+      removeTypingIndicator();
+      const response = getResponse(message);
+      addMessage(response);
+      sendBtn.disabled = false;
+      chatInput.focus(); // Keep focus on input for continuous conversation
+    }, Math.random() * 1000 + 1000); // Random delay between 1-2 seconds
+  }
+
+  // Function to ask predefined questions (from sample buttons)
+  window.askQuestion = function(question) {
+    chatInput.value = question;
+    sendMessage();
+  }
+
+  // Event listeners
+  sendBtn.addEventListener('click', sendMessage);
+  
+  chatInput.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+      sendMessage();
+    }
+  });
+
+  // Disable send button when input is empty
+  chatInput.addEventListener('input', function() {
+    sendBtn.disabled = this.value.trim() === '';
+  });
+
+  // Initialize with disabled send button
+  sendBtn.disabled = true;
+  
+  // Focus on input when page loads
+  chatInput.focus();
+});
