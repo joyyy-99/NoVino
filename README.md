@@ -33,10 +33,11 @@ This project was created as part of a portfolio and module assessment to demonst
 ## Folder Structure
 
 NoVino/
-├── img/ # Images for products, team, and design assets
-├── index.html # Main HTML structure
-├── script.js # JavaScript logic and interactivity
-├── style.css # Custom styles
+├── index.html
+├── styles.css
+├── script.js
+└── img/
+    
 
 
 ## Getting Started
