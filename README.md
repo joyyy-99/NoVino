@@ -30,15 +30,6 @@ This project was created as part of a portfolio and module assessment to demonst
 - GitHub Pages (deployment)
 - Figma (UI/UX prototyping)
 
-## Folder Structure
-
-NoVino/
-├── index.html
-├── styles.css
-├── script.js
-└── img/
-    
-
 
 ## Getting Started
 
