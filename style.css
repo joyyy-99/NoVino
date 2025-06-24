@@ -114,7 +114,7 @@ p {
   display: none;
   font-size: 1.5rem;
   cursor: pointer;
-  color: #333;
+  color: #333333;
   background: none;
   border: none;
   z-index: 1002;
@@ -135,10 +135,15 @@ p {
     padding: 4rem 2rem 2rem;
     transition: right 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     z-index: 1001;
+    opacity: 0.8;
 }
 
 .mobile-menu.open {
     right: 0;
+}
+
+.mobile-menu.active {
+    right: 0; /* Slide in */
 }
 
 .mobile-menu a {
@@ -161,12 +166,35 @@ p {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.4);
+    background-color: rgba(93, 0, 0, 0.375);
     z-index: 1000;
 }
 
 .menu-overlay.open {
     display: block;
+}
+.mobile-menu .close-button {
+    background: none; /* No background color */
+    border: none; /* No border */
+    color: #333; /* Darker color for visibility (adjust as needed) */
+    font-size: 2em; /* Make the 'x' larger and more prominent */
+    cursor: pointer;
+    position: absolute; /* Position it absolutely within the mobile menu */
+    top: 10px; /* Adjust distance from the top */
+    left: 15px; /* Adjust distance from the right */
+    padding: 5px; /* Add some padding around the 'x' for easier clicking */
+    z-index: 1001; /* Ensure it's above other menu content if necessary */
+    line-height: 1; /* Helps vertically center the 'x' */
+    width: auto; /* Allow content to determine width */
+    height: auto; /* Allow content to determine height */
+    display: flex; /* Use flexbox to center the 'x' if needed */
+    align-items: center;
+    justify-content: center;
+}
+
+.mobile-menu .close-button:hover {
+    color: #8B0000; /* Change color on hover */
+    opacity: 0.8;
 }
 
 /* Buttons */

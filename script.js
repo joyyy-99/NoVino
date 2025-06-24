@@ -1,15 +1,3 @@
-// Mobile Menu
-document.addEventListener('DOMContentLoaded', function () {
-  const mobileMenuButton = document.querySelector('.mobile-menu-button');
-  const mobileMenu = document.querySelector('.mobile-menu');
-  mobileMenuButton.addEventListener('click', function () {
-    mobileMenu.classList.toggle('hidden');
-  });
-  document.querySelectorAll('.mobile-menu a').forEach(link => {
-    link.addEventListener('click', () => mobileMenu.classList.add('hidden'));
-  });
-});
-
 // Continuous Product Carousel Functionality
 class ContinuousCarousel {
   constructor(containerId, trackId, prevBtnId, nextBtnId) {
